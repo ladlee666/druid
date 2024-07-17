@@ -729,4 +729,18 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     default void endVisit(OracleCreateTableSpaceStatement x) {
     }
+
+    default boolean visit(OracleJSONTableExpr x) {
+        return true;
+    }
+
+    default void endVisit(OracleJSONTableExpr x) {
+    }
+
+    default boolean visit(OracleJSONTableExpr.Column x) {
+        return true;
+    }
+
+    default void endVisit(OracleJSONTableExpr.Column x) {
+    }
 }

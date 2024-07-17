@@ -23,4 +23,20 @@ public class OracleCursorParamTest extends TestCase {
 
         System.out.println(stmt);
     }
+
+    public void test_1() {
+        String sql = "DECLARE\n" +
+                "CURSOR c_datas IS SELECT t.* FROM JSON_TABLE('[{ \"applename\": \"redapple \", \"applecode\": \"111000\", \"price\": \"10\" }, { \"applename\": \"greenapple \", \"applecode\": \"111111\", \"price\": \"12\" }, { \"applename\": \"yellowapple \", \"applecode\": \"111222\", \"price\": \"8\" }]','$[*]' COLUMNS(applename VARCHAR2(20) PATH '$.applename',redapple VARCHAR2(20) PATH '$.redapple',applecode VARCHAR2(20) PATH '$.applecode')) t;\n" +
+                "c_data c_datas%rowtype;\n" +
+                "BEGIN\n" +
+                "for c_data in c_datas loop\n" +
+                "dbms_output.put_line('{\"num1\":' || TO_CHAR(c_data.applename) || ',\"num2\":' || TO_CHAR(c_data.redapple) || '\"}');\n" +
+                "end loop;\n" +
+                "-- dbms_output.put_line('{\"num1\":' || TO_CHAR(num1) || ',\"num2\":' || TO_CHAR(num2) || '\"}');\n" +
+                "END;";
+
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.oracle);
+
+        System.out.println(stmt);
+    }
 }
