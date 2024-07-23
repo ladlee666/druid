@@ -42,7 +42,6 @@ public class ParseProcessor extends AbstractProcessor {
         if (CollUtil.isEmpty(visitor.getVariantModels())) {
             return;
         }
-        // 解析?对应的key，后面用来解析实际需要填充的值
         List<VariantModel> variantModels = visitor.getVariantModels();
         for (int i = 0; i < variantModels.size(); i++) {
             String key = mustacheKeysInOrder.poll();

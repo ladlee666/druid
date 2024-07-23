@@ -58,15 +58,11 @@ public class ParamProcessor extends AbstractProcessor {
             }
             Object value = params.get(paramKey);
             String valueStr = StrUtil.toStringOrNull(value);
-            if (valueStr != null && !"null".equals(valueStr)) {
+            if (StrUtil.isNotBlank(valueStr)) {
                 continue;
             }
-            // 把参数?为null的条件去掉
             SQLBinaryOperator operator = variantModel.getOperator();
             SQLBinaryOpExpr expr = (SQLBinaryOpExpr) parent;
-            // 上级还是SQLBinaryOpExpr eg: where (r.name = ? or r.email = ?) and u.username = ? ;
-            // Druid会把(r.name = ? or r.email = ?)当成一个SQLBinaryOpExpr 如果r.email = ?中参数为null，要把r.email = ?去掉，
-            // 必须要找到上级(r.name = ? or r.email = ?)再移除r.email = ?
             if (expr.getParent() instanceof SQLBinaryOpExpr) {
                 SQLBinaryOpExpr parentExpr = (SQLBinaryOpExpr) expr.getParent();
                 SQLExpr left = parentExpr.getLeft();

@@ -98,7 +98,6 @@ public class OracleCreateTableCreator extends AlterCreator {
                 ddlList.add(ddl);
             }
             for (String tableName : tables) {
-                // 获取元数据生成备注
                 setComments(connection, tableName, ddlList);
             }
         } catch (Exception ex) {

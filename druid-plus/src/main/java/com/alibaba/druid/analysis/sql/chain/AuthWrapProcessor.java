@@ -144,11 +144,9 @@ public class AuthWrapProcessor extends AbstractProcessor {
         if (CollUtil.isEmpty(columnInfos)) {
             return null;
         }
-        // 字段是否存在
         boolean empExist = false;
         boolean deptExist = false;
 
-        // 是否拼接参数的时候加上'单引号
         boolean empQuoMark = false;
         boolean deptQuoMark = false;
 
@@ -171,7 +169,6 @@ public class AuthWrapProcessor extends AbstractProcessor {
         if (!empExist && !deptExist) {
             return null;
         }
-        // 过滤科室权限
         Integer roleRange = context.getRoleRange();
         List<String> deptIds = new ArrayList<>();
         genDeptIds(roleRange, deptIds, deptExist, context);
@@ -182,7 +179,6 @@ public class AuthWrapProcessor extends AbstractProcessor {
             SQLExpr expr = buildInCondition(tableAlias, ManageConstant.DEPT_FIELD, deptIds, false, deptQuoMark);
             resultExpr = SQLBinaryOpExpr.and(resultExpr, expr);
         }
-        // 职工ID
         String userId = context.getUserId();
         if ("1".equals(userId)) {
             return null;
@@ -207,14 +203,11 @@ public class AuthWrapProcessor extends AbstractProcessor {
             return;
         }
         if (DataScopeEnum.OWN_CHILD_LEVEL.getRage().equals(roleRange)) {
-            // 查看本部门和下级部门数据
             List<String> childDeptIds = context.getChildDeptIds();
             deptIds.addAll(childDeptIds);
         } else if (DataScopeEnum.OWN_LEVEL.getRage().equals(roleRange)) {
-            // 查看本部门数据
             deptIds.add(deptId);
         } else if (DataScopeEnum.MY_CHILD_LEVEL.getRage().equals(roleRange)) {
-            //查看本部门及下级部门中个人数据
             List<String> childDeptIds = context.getChildDeptIds();
             deptIds.addAll(childDeptIds);
         } else if (DataScopeEnum.MY_LEVEL.getRage().equals(roleRange)) {
