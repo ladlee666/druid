@@ -1,0 +1,3 @@
+com.alibaba.druid.analysis.seq.builder.DbSeqBuilder
+com.alibaba.druid.analysis.seq.builder.RedisSeqBuilder
+com.alibaba.druid.analysis.seq.builder.MongoSeqBuilder

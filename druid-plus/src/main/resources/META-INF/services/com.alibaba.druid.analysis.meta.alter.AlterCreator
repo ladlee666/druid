@@ -1,0 +1,7 @@
+com.alibaba.druid.analysis.meta.alter.oracle.OracleAddAlterCreator
+com.alibaba.druid.analysis.meta.alter.oracle.OracleDropAlterCreator
+com.alibaba.druid.analysis.meta.alter.oracle.OracleModifyAlterCreator
+com.alibaba.druid.analysis.meta.alter.oracle.OracleRenameAlterCreator
+com.alibaba.druid.analysis.meta.alter.mysql.MysqlAddAlterCreator
+com.alibaba.druid.analysis.meta.alter.mysql.MysqlDropAlterCreator
+com.alibaba.druid.analysis.meta.alter.mysql.MysqlModifyAlterCreator
