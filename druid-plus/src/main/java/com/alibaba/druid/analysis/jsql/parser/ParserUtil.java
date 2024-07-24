@@ -27,7 +27,7 @@ public class ParserUtil {
      * @return
      */
     public static String parser(String body, String incrPrefix, Map<String, Set<String>> prefixMappings, KeyWord... keyWords) {
-        if (StrUtil.isBlank(body) && CollUtil.isEmpty(prefixMappings)) {
+        if (StrUtil.isBlank(body) || CollUtil.isEmpty(prefixMappings)) {
             return body;
         }
         try {
@@ -49,6 +49,29 @@ public class ParserUtil {
 
             return body2;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
+    public static String replaceTable(String body, String openToken, String closeToken, Map<String, String> tableMappings) {
+        if (StrUtil.isBlank(body) || CollUtil.isEmpty(tableMappings)) {
+            return body;
+        }
+        try {
+            List<String> placeholders = new LinkedList<>();
+            String sql = new TokenParser(openToken, closeToken, str -> {
+                placeholders.add(str);
+                return "ST0_EN1";
+            }).parse(body);
+            String transform = transform(sql, tableMappings);
+            AtomicInteger ai = new AtomicInteger(0);
+            String finalSql = new TokenParser("ST0", "EN1", str -> {
+                int index = ai.getAndIncrement();
+                return openToken + placeholders.get(index) + closeToken;
+            }).parse(transform);
+            return finalSql;
         } catch (Exception e) {
             e.printStackTrace();
         }
