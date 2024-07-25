@@ -449,10 +449,16 @@ public class TableStat {
         private Map<String, Object> attributes = new HashMap<String, Object>();
         private transient String fullName;
 
+        private SQLExpr columnExpr;
         /**
          * @since 1.0.20
          */
         private String dataType;
+
+        public Column(String table, String name, DbType dbType, SQLExpr columnExpr) {
+            this(table, name, dbType);
+            this.columnExpr = columnExpr;
+        }
 
         public Column(String table, String name) {
             this(table, name, null);
@@ -484,6 +490,13 @@ public class TableStat {
             this.table = table;
             this.name = name;
             this.hashCode64 = hashCode64;
+        }
+
+        public Column(String table, String name, long hashCode64, SQLExpr columnExpr) {
+            this.table = table;
+            this.name = name;
+            this.hashCode64 = hashCode64;
+            this.columnExpr = columnExpr;
         }
 
         public String getTable() {
@@ -594,6 +607,14 @@ public class TableStat {
 
         public void setAttributes(Map<String, Object> attributes) {
             this.attributes = attributes;
+        }
+
+        public SQLExpr getColumnExpr() {
+            return columnExpr;
+        }
+
+        public void setColumnExpr(SQLExpr columnExpr) {
+            this.columnExpr = columnExpr;
         }
 
         public int hashCode() {
