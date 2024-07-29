@@ -10,6 +10,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,9 +56,9 @@ public class ParserUtil {
         return body;
     }
 
-    public static String replaceTable(String body, String openToken, String closeToken, Map<String, String> tableMappings) {
+    public static Pair<String, Boolean> replaceTable(String body, String openToken, String closeToken, Map<String, String> tableMappings) {
         if (StrUtil.isBlank(body) || CollUtil.isEmpty(tableMappings)) {
-            return body;
+            return Pair.of(body, false);
         }
         try {
             List<String> placeholders = new LinkedList<>();
@@ -65,17 +66,18 @@ public class ParserUtil {
                 placeholders.add(str);
                 return "ST0_EN1";
             }).parse(body);
-            String transform = transform(sql, tableMappings);
+            StmtModifyVisitor visitor = new StmtModifyVisitor(tableMappings);
+            String transform = transform(sql, visitor);
             AtomicInteger ai = new AtomicInteger(0);
             String finalSql = new TokenParser("ST0", "EN1", str -> {
                 int index = ai.getAndIncrement();
                 return openToken + placeholders.get(index) + closeToken;
             }).parse(transform);
-            return finalSql;
+            return Pair.of(finalSql, visitor.isTableUpdate());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return body;
+        return Pair.of(body, false);
     }
 
     public static String transform(String sql, String prefix, Map<String, Set<String>> prefixMappings, KeyWord... keyWords) throws JSQLParserException {

@@ -79,6 +79,8 @@ public class StmtModifyVisitor implements StatementVisitor, SelectVisitor,
      */
 //    private final KeyWord[] KEYWORDS = new KeyWord[5];
 
+    private boolean tableUpdate;
+
     /**
      * @param tableMappings 修改表名
      */
@@ -102,6 +104,10 @@ public class StmtModifyVisitor implements StatementVisitor, SelectVisitor,
 //            }
 //            System.arraycopy(keyWords, 0, KEYWORDS, 0, keyWords.length);
 //        }
+    }
+
+    public boolean isTableUpdate() {
+        return tableUpdate;
     }
 
     /**
@@ -225,9 +231,13 @@ public class StmtModifyVisitor implements StatementVisitor, SelectVisitor,
 
     @Override
     public void visit(Delete delete) {
+        Table deleteTable = delete.getTable();
+        visit(deleteTable);
         List<Table> tables = delete.getTables();
-        for (Table table : tables) {
-            visit(table);
+        if (tables != null) {
+            for (Table table : tables) {
+                visit(table);
+            }
         }
         visitJoins(delete.getJoins());
         Expression where = delete.getWhere();
@@ -478,30 +488,19 @@ public class StmtModifyVisitor implements StatementVisitor, SelectVisitor,
         if (MapUtil.isNotEmpty(prefixMappings) && StrUtil.isNotBlank(prefix)) {
             if (prefixMappings.containsKey(tableName)) {
                 table.setName(prefix + CONNECTOR + tableName);
+                tableUpdate = true;
                 return;
             }
-//            Set<String> stats = tableMappings.get(tableName);
-//            if (stats != null) {
-//                boolean match = stats.stream().anyMatch(s -> {
-//                    for (KeyWord keyword : KEYWORDS) {
-//                        if (null != keyword) {
-//                            return s.equals(keyword.getWord());
-//                        }
-//                    }
-//                    return false;
-//                });
-//                if (match) {
-//                    table.setName(prefix + CONNECTOR + tableName);
-//                }
-//            }
         }
         if (StrUtil.isNotBlank(prefix) && MapUtil.isEmpty(prefixMappings)) {
             table.setName(prefix + CONNECTOR + tableName);
+            tableUpdate = true;
             return;
         }
         if (MapUtil.isNotEmpty(tableMappings) && tableMappings.containsKey(tableName)) {
             String newTableName = tableMappings.get(tableName);
             table.setName(newTableName);
+            tableUpdate = true;
         }
     }
 
@@ -1014,4 +1013,15 @@ public class StmtModifyVisitor implements StatementVisitor, SelectVisitor,
         }
     }
     ///////////////////////////////////OrderByVisitor////////////////////////////////
+
+//    public static void main(String[] args) {
+//
+//        String sql = "DELETE FROM SUP_EVAL WHERE ID = {{this.params.id}}";
+//
+//        Map<String, Set<String>> prefixMappings = new HashMap<>();
+//        prefixMappings.put("SUP_EVAL", null);
+//
+//        String parser = ParserUtil.parser(sql, "tb_", prefixMappings, null);
+//        System.out.println(parser);
+//    }
 }
