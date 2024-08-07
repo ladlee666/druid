@@ -10183,7 +10183,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLExpr comment = x.getComment();
         if (comment != null) {
-            print0(ucase ? " COMMENT " : " comment ");
+            print0(ucase ? " COMMENT = " : " comment = ");
             comment.accept(this);
         }
 
